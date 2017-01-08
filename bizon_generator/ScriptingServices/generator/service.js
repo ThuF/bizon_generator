@@ -2,7 +2,7 @@
 /* eslint-env node, dirigible */
 
 var response = require('net/http/response');
-var templateUtils = require('generator/templateUtils');
+var templateUtils = require('generator/utils/templateUtils');
 
 var templateType = 'ScriptingServices';
 var templateName = 'js_database_crud_extended';
