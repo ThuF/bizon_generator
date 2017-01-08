@@ -26,6 +26,12 @@ exports.addDataStructureTableParameters = function(template, columnDefinitions) 
 	template.templateParameters.columnDefinitions = columnDefinitions;
 };
 
+exports.addWebContentForEntityParameters = function(template, pageTitle, serviceFileName, tableColumns) {
+	template.templateParameters.pageTitle = pageTitle;
+	template.templateParameters.serviceFileName = serviceFileName;
+	template.templateParameters.tableColumns = tableColumns;
+};
+ 
 exports.addEntityServiceParameters = function(template, entityName, tableName, tableType, tableColumns) {
 	template.templateParameters.entityName = entityName;
 	template.templateParameters.tableName = tableName;
