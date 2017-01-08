@@ -1,9 +1,9 @@
 /* globals $ */
 /* eslint-env node, dirigible */
 
-var worskapceGenerator = require('generator/workspace');
 var generator = require('platform/generator');
 var repository = require('platform/repository');
+var worskapceUtils = require('generator/utils/workspaceUtils');
 
 exports.getTemplate = function(type, templateName, projectName, packageName, fileName) {
 	return {
@@ -46,7 +46,7 @@ exports.generateTemplate = function(template) {
 			fileName = source.rename.replace('%s', template.generationParameters.fileName) + source.name.substring(source.name.lastIndexOf('.'));
 		}
 		try {
-			worskapceGenerator.create({
+			worskapceUtils.create({
 				'projectName': template.generationParameters.projectName,
 				'rootFolder': source.rootFolder,
 				'packageName': template.generationParameters.packageName,
