@@ -22,6 +22,10 @@ exports.getTemplate = function(type, templateName, projectName, packageName, fil
 	};
 };
 
+exports.addDataStructureTableParameters = function(template, columnDefinitions) {
+	template.templateParameters.columnDefinitions = columnDefinitions;
+};
+
 exports.addEntityServiceParameters = function(template, entityName, tableName, tableType, tableColumns) {
 	template.templateParameters.entityName = entityName;
 	template.templateParameters.tableName = tableName;
