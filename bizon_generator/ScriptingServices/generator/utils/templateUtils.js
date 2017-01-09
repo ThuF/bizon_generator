@@ -39,6 +39,14 @@ exports.addEntityServiceParameters = function(template, entityName, tableName, t
 	template.templateParameters.tableColumns = tableColumns;
 	template.templateParameters.INTEGER = 'INTEGER';
 	template.templateParameters.VARCHAR = 'VARCHAR';
+	template.templateParameters.CHAR = 'CHAR';
+	template.templateParameters.BIGINT = 'BIGINT';
+	template.templateParameters.SMALLINT = 'SMALLINT';
+	template.templateParameters.FLOAT = 'FLOAT';
+	template.templateParameters.DOUBLE = 'DOUBLE';
+	template.templateParameters.DATE = 'DATE';
+	template.templateParameters.TIME = 'TIME';
+	template.templateParameters.TIMESTAMP = 'TIMESTAMP';
 };
 
 exports.generateTemplate = function(template) {
