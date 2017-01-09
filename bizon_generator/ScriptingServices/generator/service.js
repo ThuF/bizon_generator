@@ -2,119 +2,72 @@
 /* eslint-env node, dirigible */
 
 var response = require('net/http/response');
-var templateUtils = require('generator/utils/templateUtils');
+var dataStructuresUtils = require('generator/utils/generate/dataStructuresUtils');
+var scriptingServicesUtils = require('generator/utils/generate/scriptingServicesUtils');
+var webContentUtils = require('generator/utils/generate/webContentUtils');
 
-generateDataStructures_table();
-generateScriptingServices_js_database_crud_extended();
-generateWebContentForEntity_list_and_manage();
+var projectName = 'Humans';
+var packageName = 'humans';
+var fileNameNoExtension = 'humans';
+var serviceFileName = '../../js/' + packageName + '/' + fileNameNoExtension + '.js';
+var pageTitle = 'Humans Home';
 
-function generateDataStructures_table() {
-	var templateType = 'DataStructures';
-	var templateName = 'table';
-	var projectName = 'Students';
-	var packageName = 'students';
-	var fileName = 'students.table';
+var columnDefinitions = [
+	createDataStructureColumnDefinition('ID', 'INTEGER', undefined, true, true),
+	createDataStructureColumnDefinition('FIRST_NAME', 'VARCHAR', 50, true, undefined),
+	createDataStructureColumnDefinition('LAST_NAME', 'VARCHAR', 50, true, undefined),
+	createDataStructureColumnDefinition('WEIGHT', 'INTEGER', undefined, true, undefined),
+	createDataStructureColumnDefinition('DOB', 'DATE', undefined, true, undefined),
+];
 	
-	var columnDefinitions = [{
-			"name":"ID",
-			"type":"INTEGER",
-			"length":"0",
-			"notNull":"true",
-			"primaryKey":"true",
-			"defaultValue":""
-		}, {
-			"name":"NAME",
-			"type":"VARCHAR",
-			"length":"50",
-			"notNull":"false",
-			"primaryKey":"false",
-			"defaultValue":""
-		}, {
-	      	"name":"AGE",
-	      	"type":"INTEGER",
-	      	"length":"0",
-	      	"notNull":"false",
-	      	"primaryKey":"false",
-	      	"defaultValue":""
-	      }
-	];
-	
-	var template = templateUtils.getTemplate(templateType, templateName, projectName, packageName, fileName);
-	templateUtils.addDataStructureTableParameters(template, columnDefinitions);
-	templateUtils.generateTemplate(template);
-}
+var tableColumns = [
+	createScriptingServicesColumnDefinition('ID', 'INTEGER', true),
+	createScriptingServicesColumnDefinition('FIRST_NAME', 'VARCHAR', undefined),
+	createScriptingServicesColumnDefinition('LAST_NAME', 'VARCHAR', undefined),
+	createScriptingServicesColumnDefinition('WEIGHT', 'INTEGER', undefined),
+	createScriptingServicesColumnDefinition('DOB', 'DATE', undefined),
+];
 
-function generateScriptingServices_js_database_crud_extended() {
-	var templateType = 'ScriptingServices';
-	var templateName = 'js_database_crud_extended';
-	var projectName = 'Students';
-	var packageName = 'students';
-	var fileName = 'students.js';
-	
-	var entityName = 'STUDENTS';
-	var tableName = 'STUDENTS';
-	var tableType = 'table';
-	var tableColumns = [{
-			"name":"ID",
-			"type":"INTEGER",
-			"length":"0",
-			"notNull":"true",
-			"primaryKey":"true",
-			"defaultValue":""
-		}, {
-			"name":"NAME",
-			"type":"VARCHAR",
-			"length":"50",
-			"notNull":"false",
-			"primaryKey":"false",
-			"defaultValue":""
-		}, {
-	      	"name":"AGE",
-	      	"type":"INTEGER",
-	      	"length":"0",
-	      	"notNull":"false",
-	      	"primaryKey":"false",
-	      	"defaultValue":""
-	      }
-	];
-	
-	var template = templateUtils.getTemplate(templateType, templateName, projectName, packageName, fileName);
-	templateUtils.addEntityServiceParameters(template, entityName, tableName, tableType, tableColumns);
-	templateUtils.generateTemplate(template);
-}
+var tableColumnsWeb = [
+	createWebContentColumnDefinition('ID', '#', 'integer', true),
+	createWebContentColumnDefinition('FIRST_NAME', 'First Name', undefined, undefined),
+	createWebContentColumnDefinition('LAST_NAME', 'Last Name', undefined, undefined),
+	createWebContentColumnDefinition('WEIGHT', 'Weight (kg)', 'integer', undefined),
+	createWebContentColumnDefinition('DOB', 'Date of Birth', 'date', undefined)
+];
 
-function generateWebContentForEntity_list_and_manage() {
-	var templateType = 'WebContentForEntity';
-	var templateName = 'list_and_manage';
-	var projectName = 'Students';
-	var packageName = 'students';
-	var fileName = 'students.html';
-
-	var pageTitle = 'Students Home';
-	var serviceFileName = '../../js/students/students.js';
-	var tableColumns = [{
-			"name":"id",
-			"visible":true,
-			"widgetType":"textarea",
-			"label":"#",
-			"primaryKey":true,
-		}, {
-			"name":"name",
-			"visible":true,
-			"widgetType":"textarea",
-			"label":"Name",
-		}, {
-	      	"name":"age",
-	      	"visible":true,
-	      	"widgetType":"textarea",
-	      	"label":"Age",
-	      }
-	];
-
-	var template = templateUtils.getTemplate(templateType, templateName, projectName, packageName, fileName);
-	templateUtils.addWebContentForEntityParameters(template, pageTitle, serviceFileName, tableColumns);
-	templateUtils.generateTemplate(template);
-}
+dataStructuresUtils.generate(projectName, packageName, fileNameNoExtension + '.table', columnDefinitions);
+scriptingServicesUtils.generate(projectName, packageName, fileNameNoExtension + '.js', fileNameNoExtension.toUpperCase(), tableColumns);
+webContentUtils.generate(projectName, packageName, fileNameNoExtension + '.html', pageTitle, serviceFileName, tableColumnsWeb);
 
 response.flush();
 response.close();
+
+function createDataStructureColumnDefinition(name, type, length, notNull, primaryKey, defaultValue) {
+	return {
+		'name': name.toUpperCase(),
+		'type': type.toUpperCase(),
+		'length': length ? length : 0,
+		'notNull': notNull ? notNull : false,
+		'primaryKey': primaryKey ? primaryKey : false,
+		'defaultValue': defaultValue ? defaultValue : ''
+	};
+}
+
+function createScriptingServicesColumnDefinition(name, type, primaryKey) {
+	return {
+		'name': name,
+		'type': type,
+		'primaryKey': primaryKey ? primaryKey : false
+	};
+}
+
+function createWebContentColumnDefinition(name, label, widgetType, primaryKey) {
+	return {
+		'name': name.toLowerCase(),
+		'label': label ? label : name,
+		'widgetType': widgetType,
+		'primaryKey': primaryKey ? primaryKey : false,
+		'visible': true
+	};
+}
