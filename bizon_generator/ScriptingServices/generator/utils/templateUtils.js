@@ -22,33 +22,6 @@ exports.getTemplate = function(type, templateName, projectName, packageName, fil
 	};
 };
 
-exports.addDataStructureTableParameters = function(template, columnDefinitions) {
-	template.templateParameters.columnDefinitions = columnDefinitions;
-};
-
-exports.addWebContentForEntityParameters = function(template, pageTitle, serviceFileName, tableColumns) {
-	template.templateParameters.pageTitle = pageTitle;
-	template.templateParameters.serviceFileName = serviceFileName;
-	template.templateParameters.tableColumns = tableColumns;
-};
- 
-exports.addEntityServiceParameters = function(template, entityName, tableName, tableType, tableColumns) {
-	template.templateParameters.entityName = entityName;
-	template.templateParameters.tableName = tableName;
-	template.templateParameters.tableType = tableType;
-	template.templateParameters.tableColumns = tableColumns;
-	template.templateParameters.INTEGER = 'INTEGER';
-	template.templateParameters.VARCHAR = 'VARCHAR';
-	template.templateParameters.CHAR = 'CHAR';
-	template.templateParameters.BIGINT = 'BIGINT';
-	template.templateParameters.SMALLINT = 'SMALLINT';
-	template.templateParameters.FLOAT = 'FLOAT';
-	template.templateParameters.DOUBLE = 'DOUBLE';
-	template.templateParameters.DATE = 'DATE';
-	template.templateParameters.TIME = 'TIME';
-	template.templateParameters.TIMESTAMP = 'TIMESTAMP';
-};
-
 exports.generateTemplate = function(template) {
 	var templatePath = getTemplateByType(template.type, template.name);
 	var templateDefinition = getResourceAsJson(templatePath + '/template.json');
