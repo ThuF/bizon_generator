@@ -1,96 +1,75 @@
 /* globals $ */
 /* eslint-env node, dirigible */
 
+var request = require('net/http/request');
 var response = require('net/http/response');
 var dataStructuresUtils = require('generator/utils/generate/dataStructuresUtils');
 var scriptingServicesUtils = require('generator/utils/generate/scriptingServicesUtils');
 var webContentUtils = require('generator/utils/generate/webContentUtils');
 
-var requestBody = {
-	'projectName': 'Humans',
-	'packageName': 'humans_package',
-	'dataStructures': {
-		'fileName': 'humans.table',
-		'columns': [
-			createDataStructureColumnDefinition('ID', 'INTEGER', undefined, true, true),
-			createDataStructureColumnDefinition('FIRST_NAME', 'VARCHAR', 50, true, undefined),
-			createDataStructureColumnDefinition('LAST_NAME', 'VARCHAR', 50, true, undefined),
-			createDataStructureColumnDefinition('WEIGHT', 'INTEGER', undefined, true, undefined),
-			createDataStructureColumnDefinition('DOB', 'DATE', undefined, true, undefined)
-		]
-	},
-	'scriptingServices': {
-		'fileName': 'humans.js',
-		'tableName': 'HUMANS',
-		'columns': [
-			createScriptingServicesColumnDefinition('ID', 'INTEGER', true),
-			createScriptingServicesColumnDefinition('FIRST_NAME', 'VARCHAR', undefined),
-			createScriptingServicesColumnDefinition('LAST_NAME', 'VARCHAR', undefined),
-			createScriptingServicesColumnDefinition('WEIGHT', 'INTEGER', undefined),
-			createScriptingServicesColumnDefinition('DOB', 'DATE', undefined),
-		]
-	},
-	'webContent': {
-		'fileName': 'humans.html',
-		'pageTitle': 'Humans Home',
-		'serviceFileName': '../../js/humans_package/humans.js',
-		'columns': [
-			createWebContentColumnDefinition('ID', '#', 'integer', true),
-			createWebContentColumnDefinition('FIRST_NAME', 'First Name', undefined, undefined),
-			createWebContentColumnDefinition('LAST_NAME', 'Last Name', undefined, undefined),
-			createWebContentColumnDefinition('WEIGHT', 'Weight (kg)', 'integer', undefined),
-			createWebContentColumnDefinition('DOB', 'Date of Birth', 'date', undefined)
-		]
+handleRequest(request, response);
+
+function handleRequest(httpRequest, httpResponse, xss) {
+	try {
+		dispatchRequest(httpRequest, httpResponse, xss);
+	} catch (e) {
+		console.error(e);
+		sendResponse(httpResponse, httpResponse.BAD_REQUEST, 'text/plain', e);
 	}
-};
-
-var projectName = requestBody.projectName;
-var packageName = requestBody.packageName;
-
-var dataStructuresFileName = requestBody.dataStructures.fileName;
-var dataStructuresColumns = requestBody.dataStructures.columns;
-
-var scriptingServicesFileName = requestBody.scriptingServices.fileName;
-var scriptingServicesTableName = requestBody.scriptingServices.tableName;
-var scriptingServicesColumns = requestBody.scriptingServices.columns;
-
-var webContentFileName = requestBody.webContent.fileName;
-var webContentPageTitle = requestBody.webContent.pageTitle;
-var webContentServiceFileName = requestBody.webContent.serviceFileName;
-var webContentColumns = requestBody.webContent.columns;
-
-dataStructuresUtils.generate(projectName, packageName, dataStructuresFileName, dataStructuresColumns);
-scriptingServicesUtils.generate(projectName, packageName, scriptingServicesFileName, scriptingServicesTableName, scriptingServicesColumns);
-webContentUtils.generate(projectName, packageName, webContentFileName, webContentPageTitle, webContentServiceFileName, webContentColumns);
-
-response.flush();
-response.close();
-
-function createDataStructureColumnDefinition(name, type, length, notNull, primaryKey, defaultValue) {
-	return {
-		'name': name.toUpperCase(),
-		'type': type.toUpperCase(),
-		'length': length ? length : 0,
-		'notNull': notNull ? notNull : false,
-		'primaryKey': primaryKey ? primaryKey : false,
-		'defaultValue': defaultValue ? defaultValue : ''
-	};
 }
 
-function createScriptingServicesColumnDefinition(name, type, primaryKey) {
-	return {
-		'name': name,
-		'type': type,
-		'primaryKey': primaryKey ? primaryKey : false
-	};
+function dispatchRequest(httpRequest, httpResponse) {
+	response.setContentType('application/json; charset=UTF-8');
+	response.setCharacterEncoding('UTF-8');
+
+	switch (httpRequest.getMethod()) {
+		case 'POST': 
+			handlePostRequest(httpRequest, httpResponse);
+			break;
+		default:
+			handleNotAllowedRequest(httpResponse);
+	}
 }
 
-function createWebContentColumnDefinition(name, label, widgetType, primaryKey) {
-	return {
-		'name': name.toLowerCase(),
-		'label': label ? label : name,
-		'widgetType': widgetType,
-		'primaryKey': primaryKey ? primaryKey : false,
-		'visible': true
-	};
+function handlePostRequest(httpRequest, httpResponse) {
+	var template = getRequestBody(httpRequest);
+	var projectName = template.projectName;
+	var packageName = template.packageName;
+	
+	var dataStructuresFileName = template.dataStructures.fileName;
+	var dataStructuresColumns = template.dataStructures.columns;
+	
+	var scriptingServicesFileName = template.scriptingServices.fileName;
+	var scriptingServicesTableName = template.scriptingServices.tableName;
+	var scriptingServicesColumns = template.scriptingServices.columns;
+	
+	var webContentFileName = template.webContent.fileName;
+	var webContentPageTitle = template.webContent.pageTitle;
+	var webContentServiceFileName = template.webContent.serviceFileName;
+	var webContentColumns = template.webContent.columns;
+	
+	dataStructuresUtils.generate(projectName, packageName, dataStructuresFileName, dataStructuresColumns);
+	scriptingServicesUtils.generate(projectName, packageName, scriptingServicesFileName, scriptingServicesTableName, scriptingServicesColumns);
+	webContentUtils.generate(projectName, packageName, webContentFileName, webContentPageTitle, webContentServiceFileName, webContentColumns);
+	sendResponse(httpResponse, httpResponse.CREATED, 'text/plain', '[DataStructures], [ScriptingServices], [WebContent]');
+}
+
+function handleNotAllowedRequest(httpResponse) {
+	sendResponse(httpResponse, httpResponse.METHOD_NOT_ALLOWED);
+}
+
+function getRequestBody(httpRequest) {
+	try {
+		return JSON.parse(httpRequest.readInputText());
+	} catch (e) {
+		return null;
+	}
+}
+
+function sendResponse(response, status, contentType, content) {
+	response.setStatus(status);
+	response.setContentType(contentType);
+	response.println(content);
+	response.flush();
+	response.close();	
 }
