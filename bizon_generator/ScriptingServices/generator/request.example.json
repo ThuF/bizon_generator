@@ -1,0 +1,102 @@
+{
+	"projectName": "Humans",
+	"packageName": "humans_package",
+	"dataStructures": {
+		"fileName": "humans.table",
+		"columns": [{
+			"name": "ID",
+            "type": "INTEGER",
+            "length": 0,
+            "notNull": true,
+            "primaryKey": true,
+            "defaultValue": ""
+         }, {  
+            "name": "FIRST_NAME",
+            "type": "VARCHAR",
+            "length": 50,
+            "notNull": true,
+            "primaryKey": false,
+            "defaultValue": ""
+         }, {  
+            "name": "LAST_NAME",
+            "type": "VARCHAR",
+            "length": 50,
+            "notNull": true,
+            "primaryKey": false,
+            "defaultValue": ""
+         }, {  
+            "name": "WEIGHT",
+            "type": "INTEGER",
+            "length": 0,
+            "notNull": true,
+            "primaryKey": false,
+            "defaultValue": ""
+         }, {  
+            "name": "DOB",
+            "type": "DATE",
+            "length": 0,
+            "notNull": true,
+            "primaryKey": false,
+            "defaultValue": ""
+        }]
+    },
+    "scriptingServices": {  
+    	"fileName": "humans.js",
+    	"tableName": "HUMANS",
+    	"columns": [{  
+    		"name": "ID",
+            "type": "INTEGER",
+            "primaryKey": true
+         }, {  
+            "name": "FIRST_NAME",
+            "type": "VARCHAR",
+            "primaryKey": false
+         }, {  
+            "name": "LAST_NAME",
+            "type": "VARCHAR",
+            "primaryKey": false
+         }, {  
+            "name": "WEIGHT",
+            "type": "INTEGER",
+            "primaryKey": false
+         }, {  
+            "name": "DOB",
+            "type": "DATE",
+            "primaryKey": false
+         }]
+     },
+     "webContent": {  
+     	"fileName": "humans.html",
+     	"pageTitle": "Humans Home",
+     	"serviceFileName": "../../js/humans_package/humans.js",
+     	"columns": [{  
+            "name": "id",
+            "label": "#",
+            "widgetType": "integer",
+            "primaryKey": true,
+            "visible": true
+         }, {  
+            "name": "first_name",
+            "label": "First Name",
+            "primaryKey": false,
+            "visible": true
+         }, {  
+            "name": "last_name",
+            "label": "Last Name",
+            "primaryKey": false,
+            "visible": true
+         }, {  
+            "name": "weight",
+            "label": "Weight (kg)",
+            "widgetType": "integer",
+            "primaryKey": false,
+            "visible": true
+         }, {  
+            "name": "dob",
+            "label": "Date of Birth",
+            "widgetType": "date",
+            "primaryKey": false,
+            "visible": true
+         }]
+     }
+}
