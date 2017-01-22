@@ -36,21 +36,27 @@ function handlePostRequest(httpRequest, httpResponse) {
 	var projectName = template.projectName;
 	var packageName = template.packageName;
 	
-	var dataStructuresFileName = template.dataStructures.fileName;
-	var dataStructuresColumns = template.dataStructures.columns;
+	for (var i = 0 ; i < template.dataStructures.length; i ++) {
+		var dataStructuresFileName = template.dataStructures[i].fileName;
+		var dataStructuresColumns = template.dataStructures[i].columns;
+		dataStructuresUtils.generate(projectName, packageName, dataStructuresFileName, dataStructuresColumns);
+	}
+
+	for (var i = 0 ; i < template.scriptingServices.length; i ++) {
+		var scriptingServicesFileName = template.scriptingServices[i].fileName;
+		var scriptingServicesTableName = template.scriptingServices[i].tableName;
+		var scriptingServicesColumns = template.scriptingServices[i].columns;
+		scriptingServicesUtils.generate(projectName, packageName, scriptingServicesFileName, scriptingServicesTableName, scriptingServicesColumns);
+	}
+
+	for (var i = 0 ; i < template.webContent.length; i ++) {
+		var webContentFileName = template.webContent[i].fileName;
+		var webContentPageTitle = template.webContent[i].pageTitle;
+		var webContentServiceFileName = template.webContent[i].serviceFileName;
+		var webContentColumns = template.webContent[i].columns;
+		webContentUtils.generate(projectName, packageName, webContentFileName, webContentPageTitle, webContentServiceFileName, webContentColumns);
+	}
 	
-	var scriptingServicesFileName = template.scriptingServices.fileName;
-	var scriptingServicesTableName = template.scriptingServices.tableName;
-	var scriptingServicesColumns = template.scriptingServices.columns;
-	
-	var webContentFileName = template.webContent.fileName;
-	var webContentPageTitle = template.webContent.pageTitle;
-	var webContentServiceFileName = template.webContent.serviceFileName;
-	var webContentColumns = template.webContent.columns;
-	
-	dataStructuresUtils.generate(projectName, packageName, dataStructuresFileName, dataStructuresColumns);
-	scriptingServicesUtils.generate(projectName, packageName, scriptingServicesFileName, scriptingServicesTableName, scriptingServicesColumns);
-	webContentUtils.generate(projectName, packageName, webContentFileName, webContentPageTitle, webContentServiceFileName, webContentColumns);
 	sendResponse(httpResponse, httpResponse.CREATED, 'text/plain', '[DataStructures], [ScriptingServices], [WebContent]');
 }
 
